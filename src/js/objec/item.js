@@ -1,3 +1,4 @@
+import { play } from "../basic/audio1.js";
 import {  floor, localSet, max, min, randIntBetween } from "../basic/basic.js";
 import { LevelMap } from "../basic/map.js";
 import { ctx,GameBoardInit, Img, canvasDraw,canvasSave,canvasRestore,canvasAlpha,canvasFillStyle,roundedRect, blueColor, darkbule } from "../basic/setup.js";
@@ -75,6 +76,10 @@ class DraggableItem extends Item{
     draw(){
 
         canvasSave()
+        
+        this.clickAction==2?canvasAlpha(GameBoardInit.sound):0
+
+        
         canvasDraw(this.drawImg[this.kind],this.pos)
         
         if(this.sh){
@@ -188,7 +193,7 @@ class Plug extends Item{
         this.direction = 1
 
         this.mapping =  [-3,  3,2, -2].reduce((e, v, i) => (e[v] = i, e), {});
-        console.log(this.mapping)
+        // console.log(this.mapping)
         this.mapping1 = [1,  -1,-2, 2].reduce((e, v, i) => (e[v] = i, e), {});
         // Animate and timer
         this.moving = 0
@@ -218,8 +223,9 @@ class Plug extends Item{
 
                 if(!GameBoardInit.trans.e){
                     GameBoardInit.trans.et = new TransitionEffect(this,GameBoardInit.fadeOut)
+                    play(3)
                 }
-
+                
                 this.arrowHint = []
                 return;
             }else{
@@ -265,6 +271,7 @@ class Plug extends Item{
                     // corner is save place
                     if((temp==11||temp==16||temp==18)&&!this.vpos.equal(this.moveset[0])){
                         this.tap = 0
+                        play(3)
                     }
 
                     if(temp==10){
@@ -329,6 +336,7 @@ class Plug extends Item{
                 if(this.direction==2){
                     this.vpos.zero()
 
+                    play(2)
                     
 
                     if(!GameBoardInit.gm[GameBoardInit.level]){

@@ -47,8 +47,8 @@ const Img = {
     A2ZTile:{},
     ATB:{},
     item:{ //...createArray(17,"a78e44")
-        color:[blackColor,"2a7",blackColor,whiteColor,"a84",blackColor,"bcb",'a00',"216","216","297",...createArray(4,whiteColor),"216","216"],
-        count:[nN,nN,nN,nN,T,nN,nN,nN,T,T,C,C,C,C,C,P,P],
+        color:[blackColor,"2a7",blackColor,whiteColor,"a84",blackColor,"bcb",'a00',"216","216","297",...createArray(4,whiteColor),"216","216",whiteColor],
+        count:[nN,nN,nN,nN,T,nN,nN,nN,T,T,C,C,C,C,C,P,P,C],
         pattern:[
             "p𡎁鉈饓乒𑁁ǀ", // 1 start 起點
             " ￰𝶀𝮻𸀷ǿ", // 2 終點
@@ -67,6 +67,7 @@ const Img = {
             "𠀀ఀ𿰸𼿸㠏耰",// 箭頭 > 指向 1
             "𾀀𑥱꛹ꄤ𿓃🡥", // 插頭 直 1
             "𾀀𑩱쫲𒅌𿥂🡩",  // 插頭 直 2
+            "ᤁ𸑱༅𰗠𐘑Є"
         ]
     },
     font:{
@@ -123,7 +124,7 @@ const GameBoardInit = {
     
     tap:0,
     emerge:0,
-
+    sound:1,
     dragRect:null,
     dragNumber:0,
     dragCount:2,
@@ -137,7 +138,7 @@ const GameBoardInit = {
         et:null
     },
     UI:{
-        controler:[0,0,0],
+        controler:[1,0,0],
         view:[]
     },
 

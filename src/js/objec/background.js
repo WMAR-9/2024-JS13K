@@ -270,7 +270,12 @@ class UIStartView extends Letter{
         // Increment scatter counter
         if (this.trigger) {
             if (this.timer.start()) {
-                GameBoardInit.RME([0,1,0])
+                if(GameBoardInit.gm.find(e=>e==1)){
+                    GameBoardInit.RME([0,1,0])
+                }else{
+                    GameBoardInit.level=0
+                    GameBoardInit.RME([0,0,0])
+                }
             }
         }
     }

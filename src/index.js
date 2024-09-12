@@ -6,6 +6,7 @@ import { DraggableItem, Menu, Plug } from "./js/objec/item.js";
 import { LevelMap } from "./js/basic/map.js";
 import { TransitionEffect } from "./js/trans/transform.js";
 import { max } from "./js/basic/basic.js";
+import { keepPlayChord, playChord, stopChord } from "./js/basic/audio1.js";
 
 const resize = () =>{
 
@@ -22,8 +23,8 @@ const resize = () =>{
 
     GameBoardInit.clickObject=[]
     
-    for (let i = 0; i < 2; i++) {
-        GameBoardInit.clickObject.push(new DraggableItem(10 + grid*1.2 * i, 20, grid, grid, i+4*i, i));
+    for (let i = 0; i <= 2; i++) {
+        GameBoardInit.clickObject.push(new DraggableItem(10 + grid*1.2 * i, 20, grid, grid, i!=2?i+4*i:20, i));
     }
 
     const offsets = [
@@ -218,7 +219,8 @@ function getMousePos(event) {
 function handleStart(event) {
     event.preventDefault();
     const { x, y } = getMousePos(event);
-    
+    // AUDIO
+    playChord()
     if(GameBoardInit.UI.controler[0]&&GameBoardInit.UI.view[0]){
         GameBoardInit.UI.view[0].trigger = 1
     }
@@ -237,15 +239,20 @@ function handleStart(event) {
                 if(rect.clickAction==0){
                     GameBoardInit.RME([1,0,0])
                 }
-                if(rect.clickAction==3){
-                    
-                    GameBoardInit.dragNumber = Math.max(0,GameBoardInit.dragNumber-1)
-                    // const showNumber = GameBoardInit.dragCount
-                    // const start = GameBoardInit.dragNumber
-                    // const end = start+showNumber
-                    // //GameBoardInit.dragObject.slice(start,end)
+                if(rect.clickAction==2){
+                    console.log(rect.clickAction,GameBoardInit.sound)
+                    if(GameBoardInit.sound){
+                        // dont listen music > turn off
+                        stopChord()
+                        GameBoardInit.sound=0
+                    }else{
 
-                    // //console.log(GameBoardInit.dragNumber,GameBoardInit.dragObject.slice(start,end))
+                        // keepPlayChord()
+                        // GameBoardInit.sound=1
+                    }
+                }
+                if(rect.clickAction==3){
+                    GameBoardInit.dragNumber = Math.max(0,GameBoardInit.dragNumber-1)
                 }
                 if(rect.clickAction==4){
                     GameBoardInit.dragNumber = Math.min(Math.max(GameBoardInit.dragObject.length-GameBoardInit.dragCount,0),GameBoardInit.dragNumber+1)
@@ -302,17 +309,6 @@ function handleEnd() {
 
 
 onresize=()=>resize()
-// onmousedown = (event) => handleStart(event);
-// onmousemove = (event) => handleMove(event);
-// onmouseup = (event) => handleEnd(event);
-// onmouseleave = (event) => handleEnd(event);
-
-
-// ontouchstart = (event) => handleStart(event);
-// ontouchmove = (event) => handleMove(event);
-// ontouchend = (event) => handleEnd(event);
-// ontouchcancel = (event) => handleEnd(event);
-
 
 canvas.onmousedown = (event) => handleStart(event);
 canvas.onmousemove = (event) => handleMove(event);
