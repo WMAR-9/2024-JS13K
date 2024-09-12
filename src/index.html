@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>html,body{margin: 0;display: grid;overflow: hidden;background: #060606;
+}#a{margin: auto;image-rendering: pixelated}</style>
+</head>
+<body>
+<canvas id=canvas></canvas>
+<script src="index.js"></script>
+<!-- <canvas id=myCanvas  width="0" height="0"></canvas> -->
+
+<!-- <script>
+const TILE_SIZE = 50;
+const PLAYER = 'P';
+const BOX = 'B';
+const WALL = 'W';
+const GOAL = 'G';
+const FLOOR = '.';
+
+let CANVAS, CTX;
+
+class SokobanGame {
+    constructor(level) {
+        this.level = level;
+        this.player = { x: 0, y: 0 };
+        this.boxes = [];
+        this.goals = [];
+        this.parseLevel();
+    }
+
+    parseLevel() {
+        this.level.forEach((row, y) => {
+            for (let x = 0; x < row.length; x++) {
+                switch (row[x]) {
+                    case PLAYER:
+                        this.player = { x, y };
+                        break;
+                    case BOX:
+                        this.boxes.push({ x, y });
+                        break;
+                    case GOAL:
+                        this.goals.push({ x, y });
+                        break;
+                }
+            }
+        });
+    }
+
+    move(dx, dy) {
+        const newX = this.player.x + dx;
+        const newY = this.player.y + dy;
+
+        if (this.isWall(newX, newY)) return;
+
+        const boxIndex = this.getBoxIndex(newX, newY);
+        if (boxIndex !== -1) {
+            const newBoxX = newX + dx;
+            const newBoxY = newY + dy;
+            if (this.isWall(newBoxX, newBoxY) || this.getBoxIndex(newBoxX, newBoxY) !== -1) return;
+            this.boxes[boxIndex] = { x: newBoxX, y: newBoxY };
+        }
+
+        this.player = { x: newX, y: newY };
+    }
+
+    isWall(x, y) {
+        return this.level[y][x] === WALL;
+    }
+
+    getBoxIndex(x, y) {
+        return this.boxes.findIndex(box => box.x === x && box.y === y);
+    }
+
+    isComplete() {
+        return this.goals.every(goal => 
+            this.boxes.some(box => box.x === goal.x && box.y === goal.y)
+        );
+    }
+
+    draw() {
+        CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+        this.level.forEach((row, y) => {
+            for (let x = 0; x < row.length; x++) {
+                switch (row[x]) {
+                    case WALL:
+                        CTX.fillStyle = 'gray';
+                        CTX.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                        break;
+                    case GOAL:
+                        CTX.fillStyle = 'green';
+                        CTX.beginPath();
+                        CTX.arc((x + 0.5) * TILE_SIZE, (y + 0.5) * TILE_SIZE, TILE_SIZE / 4, 0, Math.PI * 2);
+                        CTX.fill();
+                        break;
+                    case FLOOR:
+                        CTX.fillStyle = 'white';
+                        CTX.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                        break;
+                }
+            }
+        });
+
+        this.boxes.forEach(box => {
+            CTX.fillStyle = 'brown';
+            CTX.fillRect(box.x * TILE_SIZE, box.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+        });
+
+        CTX.fillStyle = 'blue';
+        CTX.fillRect(this.player.x * TILE_SIZE, this.player.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    }
+}
+
+// 遊戲初始化
+const level = [
+    "WWWWWW",
+    "W....W",
+    "W.PB.W",
+    "W..BGW",
+    "W....W",
+    "WWWWWW"
+];
+
+function initGame() {
+    CANVAS = document.getElementById('gameCanvas');
+    CTX = CANVAS.getContext('2d');
+    
+    CANVAS.width = level[0].length * TILE_SIZE;
+    CANVAS.height = level.length * TILE_SIZE;
+
+    const game = new SokobanGame(level);
+
+    // 監聽鍵盤事件
+    document.addEventListener('keydown', (e) => {
+        switch(e.key) {
+            case 'ArrowUp':
+                game.move(0, -1);
+                break;
+            case 'ArrowDown':
+                game.move(0, 1);
+                break;
+            case 'ArrowLeft':
+                game.move(-1, 0);
+                break;
+            case 'ArrowRight':
+                game.move(1, 0);
+                break;
+        }
+        game.draw();
+        if (game.isComplete()) {
+            alert('恭喜你完成了關卡！');
+        }
+    });
+
+    // 初始繪製
+    game.draw();
+}
+
+// 當頁面加載完成時初始化遊戲
+window.onload = initGame;
+</script> -->
+</body>
+</html>

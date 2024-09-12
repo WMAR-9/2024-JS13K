@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery Level Example</title>
+</head>
+<body>
+<canvas id="batteryCanvas" width="300" height="150"></canvas>
+
+<script>
+    const canvas = document.getElementById('batteryCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function drawBattery(level) {
+        // Battery frame
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 5;
+        ctx.strokeRect(50, 50, 200, 80);
+
+        // // Battery top part
+        // ctx.fillStyle = 'black';
+        // ctx.fillRect(250, 75, 10, 30);
+
+        // Battery level (10% filled in green, rest empty)
+        const batteryWidth = 200;
+        const batteryHeight = 80;
+        const fillWidth = batteryWidth * level;
+
+        // Draw the green part (10% fill)
+        ctx.fillStyle = 'green';
+        ctx.fillRect(50, 50, fillWidth, batteryHeight);
+
+        // Draw the remaining empty part
+        ctx.fillStyle = 'lightgrey';
+        ctx.fillRect(50 + fillWidth, 50, batteryWidth - fillWidth, batteryHeight);
+    }
+
+    // Draw battery with 10% charge
+    drawBattery(0.1);
+</script>
+</body>
+</html>

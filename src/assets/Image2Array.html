@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title></title>
+	  <style>
+    body { 
+      margin: 0; 
+    }
+    canvas#a{
+      background: #111;
+    }
+  </style>
+  <meta charset="UTF-8">
+</head>
+<body>
+<canvas id =a style='z-index: 1'></canvas>
+<canvas id =b style='z-index: 1;background: #f0f'></canvas>
+<canvas id =C style='z-index: 1;background: #f10'></canvas>
+<p id="d"></p>
+</body>
+</html>
+<script src="./genCode.js"></script>
+<script>
+  /*var canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const imageData = ctx.createImageData(16, 16);
+  var canvass = document.getElementById('a')
+  canvass.width = 1000;
+  canvass.height = 726;
+// Iterate through every pixel
+  for (let i = 0; i < imageData.data.length; i += 4) {
+  // Modify pixel data
+    imageData.data[i + 0] = 190;  // R value
+    imageData.data[i + 1] = 0;    // G value
+    imageData.data[i + 2] = 210;  // B value
+    imageData.data[i + 3] = 255;  // A value
+  }
+  var canvass = document.getElementById('a')
+  var ctx1 = canvass.getContext("2d");
+  // Draw image data to the canvas
+  ctx1.putImageData(imageData, 300, 200);
+  */
+  var value = []
+  var colorPalette = []
+  var Palette = []
+  const numbersofcolor = 10
+
+  function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  }
+  
+  function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+  }
+  function hexToRgb(hex) {
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+    return r + r + g + g + b + b;
+  });
+
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+}
+
+  PaletteGenerator=imageData=>{
+    var array = {}
+    for (let i = 0; i < imageData.data.length; i += 4) {
+        // Modify pixel data
+        let red = imageData.data[i + 0]
+        let green = imageData.data[i + 1]
+        let blue = imageData.data[i + 2]
+        let alpha = imageData.data[i + 3]
+        let colora = rgbToHex(red,green,blue)
+        if (colora in array){
+          array[colora]+=1
+        }else{
+          array[colora]=1
+        }
+    }
+    var items = Object.keys(array).map(function(key) {
+        return [key, array[key]];
+    });
+    items.sort(function(first, second) {
+      return second[1] - first[1];
+    });
+    return items.slice(0, numbersofcolor)
+  }
+  PaletteColse=(r,g,b)=>{
+    var min = 999999999999999
+    var Memory_color = ""
+    for (var i = Palette.length - 1; i >= 0; i--) {
+        r1 = hexToRgb(Palette[i]).r
+        b1 = hexToRgb(Palette[i]).b
+        g1 = hexToRgb(Palette[i]).g
+        let dist = DistanceColor(r,g,b,r1,g1,b1)
+        if (min>dist){
+          min = dist
+          Memory_color = i
+        }
+    }
+    return Memory_color
+  }
+  DistanceColor=(r,g,b,r1,g2,b3)=>{
+    return Math.hypot(r1-r,g2-g,b3-b)
+  }
+  var container_color = []
+  const Setting = {
+      w:8,
+      h:8,
+      scalex:1,
+      scaley:1,
+      color:[]
+  }
+  Image2Array=(imageData,w,h)=>{
+    for (var i = PaletteGenerator(imageData).length - 1; i >= 0; i--) {
+        Palette.push(PaletteGenerator(imageData)[i][0])
+    }
+    var color = ""
+    var array = []
+    var Temp = [],count=0
+    for (let i = 0,j=0; i < imageData.data.length; i += 4) {
+      // Modify pixel data
+
+        let red = imageData.data[i + 0]
+        let green = imageData.data[i + 1]
+        let blue = imageData.data[i + 2]
+        let alpha = imageData.data[i + 3]
+        if(alpha==0){
+          color+="^"
+          Temp.push(null)
+        } 
+        else{
+          let Key = PaletteColse(red,green,blue)
+          Temp.push(Key)
+          color += parseInt(Key)
+        }
+        j++;
+        if(j>w-1){
+          array.push(Temp)
+          Temp = []
+          j=0
+        }
+
+        count++
+    }
+    console.log("count",count)
+    var canvas = document.getElementById('C');
+    canvas.width = w*20
+    canvas.height = h*20
+    let pnGImage = Array2Image(color,w,h)
+    let pnGImage_1 = Array2Image_V1([])
+    var ctx = canvas.getContext('2d')
+    ctx.putImageData(pnGImage,0,0)
+    value = array
+    colorArr = color
+    console.log("Array Code,use params ' value ' ",encodeArray2D(array))
+    console.log("one size :",color)
+    console.log(pnGImage)
+    var img = document.createElement("canvas");
+    img.width = w*20
+    img.height = h*20
+    ctx = img.getContext('2d')
+    ctx.drawImage(imagedata_to_image(pnGImage),0,0,canvas.width,canvas.height)
+
+    document.body.appendChild(img);
+    return array
+  }
+  function encodeArray2D(obj) {
+    console.log("array 2d ",obj)
+    var array = [];
+    for (var i = 0; i < obj.length; i++) {
+      array[i] = obj[i].join(',');
+    }
+    return '[' + array.join(',') + ']';
+  }
+  function imagedata_to_image(imagedata) {
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    canvas.width = imagedata.width;
+    canvas.height = imagedata.height;
+    ctx.putImageData(imagedata, 0, 0);
+    var image = new Image();
+    image.src = canvas.toDataURL();
+    return image;
+  }
+  Array2Image=(array,widthMIl,heightMIl)=>{
+    // pixel art
+    var canvas = document.getElementById('b');
+    var sx = 4,sy=4
+    var width = sx*widthMIl;
+    var height = sy*heightMIl;
+    canvas.width = width;
+    canvas.height = height;
+    var ctx = canvas.getContext('2d')
+    var j = 0
+    for(var i=w=h=0;i<array.length;i++,w+=sx){
+      if (w>=width)w=0,h+=sy;
+      if(array[i]!="^"){
+        ctx.fillStyle = Palette[array[i]]
+        ctx.lineWidth = 1;
+        ctx.fillRect(w,h,sx,sy)
+      }
+    }
+    var image = ctx.getImageData(0,0,width,height)
+    return image;
+  }
+  Array2Image_V1=(array)=>{
+    var canvas = document.getElementById('b');
+    var sx = 4,sy=4
+    var width = sx*16;
+    var height = 16*sy;
+    canvas.width = width;
+    canvas.height = height;
+    colorPalette = Palette
+
+    console.log("Color palette : (use ' colorPalette ' )",colorPalette)
+    var newImage = new Image()
+    newImage.width = width
+    newImage.height = height
+    var ctx = canvas.getContext('2d')
+    for(var i=w=h=0;i<array.length;i++,w+=sx){
+      if (w>=width){w=0;h+=sy}
+      if(array[i]!=null){
+        ctx.fillStyle = Palette[array[i]]
+        ctx.lineWidth = 1;
+        ctx.fillRect(w,h,sx,sy)
+        ctx.strokeRect(w,h,sx,sy)
+      }
+    }
+    var image = ctx.getImageData(0,0,width,height)
+    return image;	
+  }
+  async function loadImage(canvas, src, x, y, width, height, opt_callback) {
+            var img = new window.Image();
+            img.crossOrigin = '*';
+            img.onload = function () {
+                var context = canvas.getContext('2d');
+                canvas.width = width;
+                canvas.height = height;
+                context.drawImage(img, x, y, width, height);
+                opt_callback && opt_callback();
+                img = null;
+            };
+            img.src = src;
+  };
+
+  var canvas = document.getElementById('a');
+  var width = 11
+  var height = 11
+  canvas.width = width;
+  canvas.height = height;
+  var context = canvas.getContext('2d');
+  let result = []
+  
+
+  context.clearRect(0,0, canvas.width, canvas.height)
+  loadImage(
+           canvas,
+            `cor.png`,
+            0, 0,
+            width, height,
+            async () => {
+                
+                //
+                var imageData = context.getImageData(0, 0, width, height);
+                console.log(imageData)
+
+                const gen = new genCode()
+                const de = new deCode()
+                let value =await Image2Array(imageData,width,height)
+
+                const a = arr2D21D(value,11)
+                const row = []
+                
+                a[0].forEach((e,i)=>{
+                  if(a[0][i]==0){
+                    a[0][i]=1
+                  }
+                  if(a[0][i]==null){
+                    a[0][i]=0
+                  }
+                  
+                })
+                const bit_size = 1
+                console.log("CA : ",a[0])
+                let generCode = gen.array2String(a[0],bit_size)
+                // a.forEach(e=>{
+                //     row.push(gen.array2ZipString(e))
+                // }) 
+                
+                let DeCode = de.string2Array(generCode,bit_size)
+                console.log(DeCode)
+                let ans = 0
+                DeCode.forEach((e,i)=>{
+                  if(a[0][i]!=e){
+                    ans = 1
+                  }
+                })
+                if(ans==0){
+                  console.log(`Ans: "${generCode}"`)
+                }
+                
+                document.getElementById('d').innerHTML = generCode
+                //console.log(imageData);
+                //console.log(Image2Array(imageData))
+            });
+</script>

@@ -1,0 +1,11 @@
+html,body{
+    height: 100%;
+    display: grid;
+    overflow: hidden;
+    background: #434343;
+}
+#a{
+    border-radius: 1px;
+    margin: auto;
+    image-rendering: pixelated
+}
