@@ -1,3 +1,5 @@
+import { appendItem, floor } from "../basic/basic.js"
+
 let audioCtx = null
 
 let oscillators = []
@@ -5,10 +7,10 @@ let isPlaying = false
 let songLength = 0
 
 //  4 chapter for loop
-const songList = ["a","a","c","c","a","a","b","b","a","a","t"]
+const songList = ["b","b","t","b","t","t"]
 
 // 0 - 4 
-const soundType = ["sine","square","sawtooth","triangle"]
+const soundType = ["sawtooth","square","triangle","sine",]
 
 /*
     type,temp,duration,freq,notes,volume,decay
@@ -20,13 +22,12 @@ const mainFreq = [0]
 const startingNoteFrequency = 130.81
 
 for (let i = 0; i < 50; i++) {
-    appendItem(mainFreq,(startingNoteFrequency * math.pow(2, i / 12)))
+    appendItem(mainFreq,(startingNoteFrequency * Math.pow(2, i / 12)))
 }
 
 const triad = [
     [0,13, 17, 20, 18, 15, 18, 20, 17],
     [0,15, 20, 22, 20, 17, 20, 22, 18],
-    [0,17, 22, 25, 22, 18, 22, 24, 20]
 ]
 
 const fifthChord = [
@@ -39,93 +40,39 @@ const fifthChord = [
 
 const song1 = {
    "t":[
-    [0,.5,.5,[
-        [0,12, 14, 16, 17, 19, 21]
+    [1,.5,.5,[
+        [0,1,3,4,5,7,8,10,12]
     ],  [
-            1,0,3,1,0,2,3,1,0,
-            3,4,5,0,3,4,5,0,5,
-            6,5,4,0,1,5,6,5,4,
-            3,1,0,5,1,0,1,5,1,
-            0
-        ],.2,.001
+            1,0,0,1,0,2,0,0,2,
+            3,4,5,0,0,5,4,3,0,
+            0,2,2,0,0,0,1,1,0
+        ],.1,.01
     ],
     [
-        3,1,1,triad,[
-            1,0,1,2,0,3,
-            0,4,0,3,1,2,
-            0,3,0,1,5,1
+        3,1,1,fifthChord,[
+            1,0,0,0,0,3,
+            0,0,0,0,2,0,
+            0,3,0,1,0,0
            ],.1,.01
     ]
    ],
-   "a":[
-        [3,.5,1,[
-            [0,1, 2]
-        ],[1,2,0,2,1,0],.3,.001
-        ],
-        [
-            0,1,1,triad,[
-                1,0,0
-            ],.3,.01
-        ]
-    ],
-    "c":[
-        [0,.5,.5,[
-            [0,12, 14, 16, 17, 19, 21,22,25,27],
-        ],[ 
-            5,2,3,3,2,1,1,1,
-            5,5,5,6,7,6,7,0,
-            9,9,8,7,6,5,3,0,
-            5,5,6,8,8,6,5,4,
-            3,2,0,5,2,3,3,2,
-            1,1,1,0,1,2,3,5,
-            5,5,3,2,1,5,1,0,
-            1,1,1,2,3,5,5,5,
-            5,0,5,2,3,3,2,1,
-            5,5,5,6,3,2,1,1,
-            6,6,1,2,5,6,5,3,
-            2,1
-        ],.3,.01
-        ],
-        [
-            3,2,2,triad,[
-                1,0,1,2,0,3,
-                1,4,2,3,0,2,
-                2,3,0,1,0,1,
-                1,0,1,2,0,3,
-            ],.1,.01
-        ],
-        [3,.5,1,[[0,2, 0, 0, 2, 0, 0,0,0,2]],[ 
-            5,2,3,3,2,1,1,1,
-            5,5,5,6,7,6,7,0,
-            9,9,8,7,6,5,3,0,
-            5,5,6,8,8,6,5,4,
-            3,2,0,5,2,3,3,2,
-            1,1,1,0,1,2,3,5,
-            5,5,3,2,1,5,1,0,
-            1,1,1,2,3,5,5,5,
-            5,0,5,2,3,3,2,1,
-            5,5,5,6,3,2,1,1,
-            6,6,1,2,5,6,5,3,
-            2,1
-        ],.2,.01
-        ]
-    ],
     "b":[
-        [3,.5,1,[
+        [1,.5,.5,[
             [0,1,3,4,5,7,8,10,12],
         ],[ 
-            6,7,6,5,4,4,5,2,
-            6,6,7,5,4,3,2,3,
-            3,4,5,3,4,5,4,2,
-            2,3,4,6,6,4,4,3,
-            2,6,6,7,6,4,3,4
-        ],.5,.01
+            0,0,6,0,4,0,5,2,
+            6,6,0,0,4,0,0,3,
+            0,0,6,0,4,0,5,2,
+            2,0,4,0,6,4,0,3,
+            2,6,0,7,6,0,3,4
+        ],.1,.01
         ],
-        [0,1,1,fifthChord,[
-            3,2,1,0,2,1,3,1,
-            0,3,1,0,1,3,0,1,
-            2,0,2,1
-        ],.2,.01
+        [
+            3,1,1,fifthChord,[
+                1,0,0,1,0,3,
+                0,0,3,0,2,0,
+                0,3,0,1,0,0
+               ],.1,.01
         ]
     ]
 }
@@ -233,7 +180,7 @@ const createPcmData=(frequencyStart, frequencyEnd, attackTime, decayTime, sustai
       } else {
         envelope = sustainLevel * (1 - (t - attackTime - decayTime - duration + releaseTime) / releaseTime); // 释放阶段
       }
-      const sampleValue = envelope * volume * math.sin(2 * PI * frequency * t);
+      const sampleValue = envelope * volume * Math.sin(2 * Math.PI * frequency * t);
   
       pcmData[i] = sampleValue;
     }
@@ -241,10 +188,11 @@ const createPcmData=(frequencyStart, frequencyEnd, attackTime, decayTime, sustai
     return pcmData;
 }
 
-const rightPcmData =createPcmData(mainFreq[5], mainFreq[3], .1,.1,0, .1,.3,.1)
-const leftPcmData =createPcmData(mainFreq[3], mainFreq[5], .1,.1,0, .1,.3,.1)
+const touchFail =createPcmData(mainFreq[4], mainFreq[1], .1,1,0, .5,.8,.5)
 
-function playPcmData(pcmData) {
+const achive = createPcmData(mainFreq[5], mainFreq[7], .1,1,.4, 1,.5,.5)
+
+const playPcmData=(pcmData)=>{
   if(!audioContext){
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
@@ -265,5 +213,12 @@ function playPcmData(pcmData) {
 }
 
 const play=i=>{
-    playPcmData(i?leftPcmData:rightPcmData);
+    playPcmData(i==2?achive:touchFail);
+}
+
+export {
+    play,
+    playChord,
+    stopChord,
+    keepPlayChord
 }

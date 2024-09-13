@@ -1,4 +1,4 @@
-import { play } from "../basic/audio1.js";
+import { play } from "../audio/audio1.js";
 import {  floor, localSet, max, min, randIntBetween } from "../basic/basic.js";
 import { LevelMap } from "../basic/map.js";
 import { ctx,GameBoardInit, Img, canvasDraw,canvasSave,canvasRestore,canvasAlpha,canvasFillStyle,roundedRect, blueColor, darkbule } from "../basic/setup.js";
